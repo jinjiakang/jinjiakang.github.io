@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <title>mylab</title>
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+        font-size: 1vw;
+    }
+
+    html {
+        background: rgba(0, 0, 0, 0.03);
+    }
+
+    body,
+    html {
+        height: 100%;
+    }
+
+    body {
+        font-family: "Source Sans Pro", sans-serif;
+        font-size: 115%;
+        display: -webkit-box;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        flex-direction: column;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .chat-output {
+        -webkit-box-flex: 1;
+        flex: 1;
+        padding: 20px;
+        display: -webkit-box;
+        display: flex;
+        background: white;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        flex-direction: column;
+    }
+
+    .chat-output>div {
+        margin: 0 0 20px 0;
+    }
+
+    .chat-output .user-message .message {
+        background: #0fb0df;
+        color: white;
+    }
+
+    .chat-output .bot-message {
+        text-align: right;
+    }
+
+    .chat-output .bot-message .message {
+        background: #eee;
+    }
+
+    .chat-output .message {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .chat-input {
+        padding: 20px;
+        background: #eee;
+        border: 1px solid #ccc;
+        border-bottom: 0;
+    }
+
+    .chat-input .user-input {
+        width: 100%;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 8px;
+    }
+</style>
+
+<body>
+
+    <div id="app" style="height: 100%;">
+        <div class="chat-output" id="chat-output" style="height: 80%;">
+            <div class="user-message" v-for="item in jsonAry">
+                <div class="message">{{item.name}} : {{item.content}} </div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <div id="user-input-form">
+                <input type="text" v-model="content" id="content" class="user-input" placeholder="請輸入文字"
+                    @keyup.enter="send()">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+
+            content: '',
+            json: null,
+            jsonAry: []
+        },
+        created: function () {
+            this.getData()
+        }, mounted() {
+            var _this = this;
+            this.timer = setInterval(function () {
+                app.getData()
+            }, 1000);// 
+        },
+        methods: {
+            send: function () {
+                if (this.content != '' && $.urlParam('name') != '') {
+                    let chatData = {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            name: $.urlParam('name'), content: this.content, time: new Date().toLocaleString()
+                        })
+                    }
+                    fetch("https://mylab-eb970.firebaseio.com/products.json", chatData)
+                        .then(r => r.json())
+                        .then(json => {
+                            this.getData()
+                        })
+                    this.content = '';
+                }
+            },
+            getData: function () {
+                fetch("https://mylab-eb970.firebaseio.com/products.json")
+                    .then(r => r.json())
+                    .then(json => {
+                        this.json = json;
+                        let ary = [];
+                        $.each(json, function (key, value) {
+                            let obj = {};
+                            $.each(value, function (key, value) {
+                                console.log(key, value);
+                                obj[key] = value;
+                            });
+                            ary.push(obj);
+                        });
+                        this.jsonAry = ary
+                    });
+            }
+        }
+    })
+
+
+    $.urlParam = function (name) {
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        return results[1] || 0;
+    }
+</script>
