@@ -92,7 +92,7 @@
 <body>
 
     <div id="app" style="height: 100%;">
-        <div class="chat-output" id="chat-output" style="height: 80%;">
+        <div class="chat-output" id="chat-output" style="height: 80%;overflow: auto;">
             <div class="user-message" v-for="item in jsonAry">
                 <div class="message">{{item.name}} : {{item.content}} </div>
             </div>
@@ -117,7 +117,7 @@
             jsonAry: []
         },
         created: function () {
-            this.getData()
+            this.getData();
         }, mounted() {
             var _this = this;
             this.timer = setInterval(function () {
@@ -137,6 +137,7 @@
                         .then(r => r.json())
                         .then(json => {
                             this.getData()
+                            
                         })
                     this.content = '';
                 }
@@ -150,12 +151,13 @@
                         $.each(json, function (key, value) {
                             let obj = {};
                             $.each(value, function (key, value) {
-                                console.log(key, value);
+                                
                                 obj[key] = value;
                             });
                             ary.push(obj);
                         });
                         this.jsonAry = ary
+                        $('#chat-output').scrollTop($('#chat-output').prop('scrollHeight'));
                     });
             }
         }
