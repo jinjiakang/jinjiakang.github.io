@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <title>mylab</title>
 </head>
@@ -90,19 +91,21 @@
 </style>
 
 <body>
-
+    
     <div id="app" style="height: 100%;">
         <div class="chat-output" id="chat-output" style="height: 80%;overflow: auto;">
-            <div class="user-message" v-for="item in jsonAry">
+            <div v-bind:class="userName == item.name ? 'bot-message' : 'user-message'"  v-for="item in jsonAry">
                 <div class="message">{{item.name}} : {{item.content}} </div>
             </div>
         </div>
         <div class="chat-input">
             <div id="user-input-form">
                 <input type="text" v-model="content" id="content" class="user-input" placeholder="請輸入文字"
-                    @keyup.enter="send()">
+                    @keypress.enter="send()" autocomplete="off">
+                
             </div>
         </div>
+        
     </div>
 </body>
 
@@ -111,18 +114,23 @@
     var app = new Vue({
         el: '#app',
         data: {
-
+            database: null,
             content: '',
             json: null,
-            jsonAry: []
+            jsonAry: [],
+            userName: ''
         },
         created: function () {
+            firebase.initializeApp({
+                databaseURL: "https://mylab-eb970.firebaseio.com/"
+            });
+            this.database = firebase.database();
             this.getData();
-        }, mounted() {
-            var _this = this;
-            this.timer = setInterval(function () {
-                app.getData()
-            }, 1000);// 
+            this.userName = this.urlGetname('name')
+            
+        },
+        updated: function() {
+            $('#chat-output').scrollTop($('#chat-output').prop('scrollHeight'));   
         },
         methods: {
             send: function () {
@@ -143,22 +151,22 @@
                 }
             },
             getData: function () {
-                fetch("https://mylab-eb970.firebaseio.com/products.json")
-                    .then(r => r.json())
-                    .then(json => {
-                        this.json = json;
+                this.database .ref('/products').on('value',e => {
                         let ary = [];
-                        $.each(json, function (key, value) {
+                        $.each(e.val(), function (key, value) {
                             let obj = {};
                             $.each(value, function (key, value) {
-                                
                                 obj[key] = value;
                             });
                             ary.push(obj);
                         });
-                        this.jsonAry = ary
-                        $('#chat-output').scrollTop($('#chat-output').prop('scrollHeight'));
-                    });
+                        this.jsonAry = ary 
+                        $('#chat-output').scrollTop($('#chat-output').prop('scrollHeight'));          
+                });       
+            },
+            urlGetname: function (name) {
+                var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                return results[1] || 0;
             }
         }
     })
