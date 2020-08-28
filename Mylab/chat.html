@@ -91,10 +91,10 @@
 </style>
 
 <body>
-    
+
     <div id="app" style="height: 100%;">
         <div class="chat-output" id="chat-output" style="height: 80%;overflow: auto;">
-            <div v-bind:class="userName == item.name ? 'bot-message' : 'user-message'"  v-for="item in jsonAry">
+            <div v-bind:class="userName == item.name ? 'bot-message' : 'user-message'" v-for="item in jsonAry">
                 <div class="message">{{item.name}} : {{item.content}} </div>
             </div>
         </div>
@@ -102,10 +102,10 @@
             <div id="user-input-form">
                 <input type="text" v-model="content" id="content" class="user-input" placeholder="請輸入文字"
                     @keypress.enter="send()" autocomplete="off">
-                
+
             </div>
         </div>
-        
+
     </div>
 </body>
 
@@ -127,10 +127,10 @@
             this.database = firebase.database();
             this.getData();
             this.userName = this.urlGetname('name')
-            
+
         },
-        updated: function() {
-            $('#chat-output').scrollTop($('#chat-output').prop('scrollHeight'));   
+        updated: function () {
+            $('#chat-output').scrollTop($('#chat-output').prop('scrollHeight'));
         },
         methods: {
             send: function () {
@@ -145,35 +145,62 @@
                         .then(r => r.json())
                         .then(json => {
                             this.getData()
-                            
+
                         })
                     this.content = '';
                 }
             },
             getData: function () {
-                this.database .ref('/products').on('value',e => {
-                        let ary = [];
-                        $.each(e.val(), function (key, value) {
-                            let obj = {};
-                            $.each(value, function (key, value) {
-                                obj[key] = value;
-                            });
-                            ary.push(obj);
+                this.database.ref('/products').on('value', e => {
+                    let ary = [];
+                    $.each(e.val(), function (key, value) {
+                        let obj = {};
+                        $.each(value, function (key, value) {
+                            obj[key] = value;
                         });
-                        this.jsonAry = ary 
-                        $('#chat-output').scrollTop($('#chat-output').prop('scrollHeight'));          
-                });       
+                        ary.push(obj);
+                    });
+                    this.jsonAry = ary
+                    $('#chat-output').scrollTop($('#chat-output').prop('scrollHeight'));
+                    if (document.visibilityState == 'hidden') {
+                        this.notifyMe();
+                    }
+
+
+                });
             },
             urlGetname: function (name) {
                 var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
                 return results[1] || 0;
+            },
+            notifyMe: function () {
+                // Let's check if the browser supports notifications
+                if (!("Notification" in window)) {
+                    alert("This browser does not support desktop notification");
+                }
+
+                // Let's check whether notification permissions have already been granted
+                else if (Notification.permission === "granted") {
+                    // If it's okay let's create a notification
+                    var notification = new Notification(this.userName + "你有新訊息💗");
+                }
+
+                // Otherwise, we need to ask the user for permission
+                else if (Notification.permission !== "denied") {
+                    Notification.requestPermission().then(function (permission) {
+                        // If the user accepts, let's create a notification
+                        if (permission === "granted") {
+                            var notification = new Notification(this.userName + "你有新訊息💗");
+                        }
+                    });
+                }
             }
         }
     })
-
 
     $.urlParam = function (name) {
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
         return results[1] || 0;
     }
+
 </script>
