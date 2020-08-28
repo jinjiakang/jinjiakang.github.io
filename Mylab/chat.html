@@ -161,7 +161,7 @@
                         ary.push(obj);
                     });
                     if (this.jsonAry.length != ary.length) {
-                        this.notifyMe(ary[ary.length]);
+                        this.notifyMe(ary[ary.length-1].content);
                     }
                     this.jsonAry = ary
                     $('#chat-output').scrollTop($('#chat-output').prop('scrollHeight'));
