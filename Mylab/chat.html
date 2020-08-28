@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <title>mylab</title>
 </head>
@@ -151,7 +151,7 @@
                 }
             },
             getData: function () {
-                this.database.ref('/products').on('value', e => {
+                this.database.ref('/products').limitToLast(30).on('value', e => {
                     let ary = [];
                     $.each(e.val(), function (key, value) {
                         let obj = {};
@@ -160,12 +160,13 @@
                         });
                         ary.push(obj);
                     });
-                    if (this.jsonAry.length != ary.length) {
-                        this.notifyMe(ary[ary.length-1].content);
+                    let time = this.jsonAry[0] == undefined ? '' : this.jsonAry[0].time
+                    let newTime = ary[0] == undefined ? '' : ary[0].time
+                    if (time != newTime) {
+                        this.notifyMe(ary[ary.length - 1].content);
                     }
                     this.jsonAry = ary
                     $('#chat-output').scrollTop($('#chat-output').prop('scrollHeight'));
-
                 });
             },
             urlGetname: function (name) {
