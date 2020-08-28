@@ -95,7 +95,7 @@
     <div id="app" style="height: 100%;">
         <div class="chat-output" id="chat-output" style="height: 80%;overflow: auto;">
             <div v-bind:class="userName == item.name ? 'bot-message' : 'user-message'" v-for="item in jsonAry">
-                <div class="message">{{item.name}} : {{item.content}} </div>
+                <div class="message">{{userName == item.name ? '' : item.name +': '}} {{item.content}} </div>
             </div>
         </div>
         <div class="chat-input">
@@ -160,12 +160,11 @@
                         });
                         ary.push(obj);
                     });
+                    if (this.jsonAry.length != ary.length) {
+                        this.notifyMe(ary[ary.length]);
+                    }
                     this.jsonAry = ary
                     $('#chat-output').scrollTop($('#chat-output').prop('scrollHeight'));
-                    if (document.visibilityState == 'hidden') {
-                        this.notifyMe();
-                    }
-
 
                 });
             },
@@ -173,26 +172,29 @@
                 var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
                 return results[1] || 0;
             },
-            notifyMe: function () {
-                // Let's check if the browser supports notifications
-                if (!("Notification" in window)) {
-                    alert("This browser does not support desktop notification");
-                }
+            notifyMe: function (text) {
 
-                // Let's check whether notification permissions have already been granted
-                else if (Notification.permission === "granted") {
-                    // If it's okay let's create a notification
-                    var notification = new Notification(this.userName + "你有新訊息💗");
-                }
+                if (document.visibilityState == 'hidden') {
+                    // Let's check if the browser supports notifications
+                    if (!("Notification" in window)) {
+                        alert("This browser does not support desktop notification");
+                    }
 
-                // Otherwise, we need to ask the user for permission
-                else if (Notification.permission !== "denied") {
-                    Notification.requestPermission().then(function (permission) {
-                        // If the user accepts, let's create a notification
-                        if (permission === "granted") {
-                            var notification = new Notification(this.userName + "你有新訊息💗");
-                        }
-                    });
+                    // Let's check whether notification permissions have already been granted
+                    else if (Notification.permission === "granted") {
+                        // If it's okay let's create a notification
+                        var notification = new Notification("新訊息💗: " + text);
+                    }
+
+                    // Otherwise, we need to ask the user for permission
+                    else if (Notification.permission !== "denied") {
+                        Notification.requestPermission().then(function (permission) {
+                            // If the user accepts, let's create a notification
+                            if (permission === "granted") {
+                                var notification = new Notification("新訊息💗: " + text);
+                            }
+                        });
+                    }
                 }
             }
         }
