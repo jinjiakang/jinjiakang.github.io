@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -94,7 +94,7 @@
 <body>
 
     <div id="app" style="height: 100%;">
-        <div class="chat-output" id="chat-output" style="height: 92%;overflow: auto;">
+        <div class="chat-output" id="chat-output" style="height: 90%;overflow: auto;">
             <div v-bind:class="userName == item.name ? 'bot-message' : 'user-message'" v-for="item in jsonAry">
                 <div class="message" style="white-space: pre-line;" align="left"
                 >{{userName == item.name ? '' +item.content : item.name +': '+item.content}}
