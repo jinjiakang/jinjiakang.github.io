@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -84,10 +84,8 @@
     .chat-input .user-input {
         width: 100%;
         font-size: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+        border: 2px solid #ccc;   
         padding: 8px;
-
     }
 </style>
 
@@ -110,7 +108,8 @@
                 <button @click="send" style="user-select: none;
                 background-image: none;
                 border: 1px solid transparent;
-                ">Send</button>
+                background-color: #ccc;white-space:nowrap;
+                ">送出</button>
             </div>
         </div>
 
