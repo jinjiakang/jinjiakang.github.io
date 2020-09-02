@@ -84,7 +84,7 @@
     .chat-input .user-input {
         width: 100%;
         font-size: 1rem;
-        border: 2px solid #ccc;   
+        border: 2px solid #ccc;
         padding: 8px;
     }
 </style>
@@ -94,16 +94,15 @@
     <div id="app" style="height: 100%;">
         <div class="chat-output" id="chat-output" style="height: 90%;overflow: auto;">
             <div v-bind:class="userName == item.name ? 'bot-message' : 'user-message'" v-for="item in jsonAry">
-                <div class="message" style="white-space: pre-line;" align="left"
-                >{{userName == item.name ? '' +item.content : item.name +': '+item.content}}
-                 <span style="font-size: 0.5rem;">{{item.time}}</span>
+                <div class="message" style="white-space: pre-line;" align="left">{{userName == item.name ? '' +item.content : item.name +': '+item.content}}
+                    <span style="font-size: 0.5rem;">{{item.time}}</span>
                 </div>
             </div>
         </div>
         <div class="chat-input">
             <div id="user-input-form" style="display: flex;">
                 <textarea v-model="content" id="content" minlength="1" maxlength="1500" id="content" class="user-input"
-                    placeholder="請輸入文字" autocomplete="off" style="resize:none;height: 2.5rem;">
+                    placeholder="請輸入文字" autocomplete="off" style="resize:none;height: 2.5rem;" @keydown="check">
                 </textarea>
                 <button @click="send" style="user-select: none;
                 background-image: none;
@@ -112,7 +111,6 @@
                 ">送出</button>
             </div>
         </div>
-
     </div>
 </body>
 
@@ -203,6 +201,11 @@
                             }
                         });
                     }
+                }
+            },
+            check() {
+                if(event.ctrlKey && event.keyCode == 13){
+                    this.send();
                 }
             }
         }
