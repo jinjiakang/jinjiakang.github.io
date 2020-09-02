@@ -75,7 +75,7 @@
     }
 
     .chat-input {
-        padding: 20px;
+        padding: 10px;
         background: #eee;
         border: 1px solid #ccc;
         border-bottom: 0;
@@ -87,22 +87,30 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         padding: 8px;
+
     }
 </style>
 
 <body>
 
     <div id="app" style="height: 100%;">
-        <div class="chat-output" id="chat-output" style="height: 80%;overflow: auto;">
+        <div class="chat-output" id="chat-output" style="height: 92%;overflow: auto;">
             <div v-bind:class="userName == item.name ? 'bot-message' : 'user-message'" v-for="item in jsonAry">
-                <div class="message">{{userName == item.name ? '' : item.name +': '}} {{item.content}} </div>
+                <div class="message" style="white-space: pre-line;" align="left"
+                >{{userName == item.name ? '' +item.content : item.name +': '+item.content}}
+                 <span style="font-size: 0.5rem;">{{item.time}}</span>
+                </div>
             </div>
         </div>
         <div class="chat-input">
-            <div id="user-input-form">
-                <input type="text" v-model="content" id="content" class="user-input" placeholder="請輸入文字"
-                    @keypress.enter="send()" autocomplete="off">
-
+            <div id="user-input-form" style="display: flex;">
+                <textarea v-model="content" id="content" minlength="1" maxlength="1500" id="content" class="user-input"
+                    placeholder="請輸入文字" autocomplete="off" style="resize:none;height: 2.5rem;">
+                </textarea>
+                <button @click="send" style="user-select: none;
+                background-image: none;
+                border: 1px solid transparent;
+                ">Send</button>
             </div>
         </div>
 
