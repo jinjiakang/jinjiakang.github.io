@@ -94,13 +94,18 @@
     <div id="app" style="height: 100%;">
         <div class="chat-output" id="chat-output" style="height: 90%;overflow: auto;">
             <div v-bind:class="userName == item.name ? 'bot-message' : 'user-message'" v-for="item in jsonAry">
-                <div class="message" style="white-space: pre-line;" align="left"
-                >{{userName == item.name ? '' +item.content : item.name +': '+item.content}}
+                <div class="message" style="white-space: pre-line;" align="left" @click="reply(item.name,item.content)">{{userName == item.name ? '' +item.content : item.name +': '+item.content}}
                     <span style="font-size: 0.5rem;">{{item.time}}</span>
                 </div>
             </div>
         </div>
         <div class="chat-input">
+            <div style="display: flex;margin-bottom: 3px;" v-if="isShow">
+                <div style="display: block; width: 100%;">
+                    <span style="color: #ccc;cursor: pointer;float: right;" @click="cleanReply">X</span>
+                    <span >{{replyMsg}}</span>
+                </div>
+            </div>
             <div id="user-input-form" style="display: flex;">
                 <textarea v-model="content" id="content" minlength="1" maxlength="1500" id="content" class="user-input"
                     placeholder="請輸入文字" autocomplete="off" style="resize:none;height: 2.5rem;" @keydown="check">
@@ -124,7 +129,9 @@
             content: '',
             json: null,
             jsonAry: [],
-            userName: ''
+            userName: '',
+            isShow: false,
+            replyMsg:''
         },
         created: function () {
             firebase.initializeApp({
@@ -141,10 +148,15 @@
         methods: {
             send: function () {
                 if (this.content != '' && $.urlParam('name') != '') {
+                    let tempContent = this.content
+                    if(this.replyMsg != ''){
+                        tempContent = 'Ⓡ'+this.replyMsg +' \n ↶ \n' + this.content
+                    }
+
                     let chatData = {
                         method: 'POST',
                         body: JSON.stringify({
-                            name: $.urlParam('name'), content: this.content, time: new Date().toLocaleString()
+                            name: $.urlParam('name'), content: tempContent, time: new Date().toLocaleString()
                         })
                     }
                     fetch("https://mylab-eb970.firebaseio.com/products.json", chatData)
@@ -152,9 +164,9 @@
                         .then(json => {
                             this.getData()
                         })
-                    this.content = '';
+                    this.content = ''
+                    this.cleanReply()
                 }
-                
             },
             getData: function () {
                 this.database.ref('/products').limitToLast(30).on('value', e => {
@@ -180,19 +192,16 @@
                 return results[1] || 0;
             },
             notifyMe: function (text) {
-
                 if (document.visibilityState == 'hidden') {
                     // Let's check if the browser supports notifications
                     if (!("Notification" in window)) {
                         alert("This browser does not support desktop notification");
                     }
-
                     // Let's check whether notification permissions have already been granted
                     else if (Notification.permission === "granted") {
                         // If it's okay let's create a notification
                         var notification = new Notification("新訊息💗: " + text);
                     }
-
                     // Otherwise, we need to ask the user for permission
                     else if (Notification.permission !== "denied") {
                         Notification.requestPermission().then(function (permission) {
@@ -206,13 +215,23 @@
             },
             check() {
                 if (event.shiftKey && event.keyCode == 13) {
-                } else if ( !this.isMobile() && event.keyCode == 13) {
+                } else if (!this.isMobile() && event.keyCode == 13) {
                     event.preventDefault();
                     this.send();
                 }
             }, isMobile() {
                 try { document.createEvent("TouchEvent"); return true; }
                 catch (e) { return false; }
+            }, reply(name,replyMsg) {
+                this.isShow=true;
+                if(name == this.userName){
+                    this.replyMsg=replyMsg;
+                }else{
+                    this.replyMsg=name+': '+replyMsg;
+                }             
+            }, cleanReply(){
+                this.isShow=false;
+                this.replyMsg='';
             }
         }
     })
