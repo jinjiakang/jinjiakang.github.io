@@ -94,7 +94,8 @@
     <div id="app" style="height: 100%;">
         <div class="chat-output" id="chat-output" style="height: 90%;overflow: auto;">
             <div v-bind:class="userName == item.name ? 'bot-message' : 'user-message'" v-for="item in jsonAry">
-                <div class="message" style="white-space: pre-line;" align="left">{{userName == item.name ? '' +item.content : item.name +': '+item.content}}
+                <div class="message" style="white-space: pre-line;" align="left"
+                >{{userName == item.name ? '' +item.content : item.name +': '+item.content}}
                     <span style="font-size: 0.5rem;">{{item.time}}</span>
                 </div>
             </div>
@@ -150,10 +151,10 @@
                         .then(r => r.json())
                         .then(json => {
                             this.getData()
-
                         })
                     this.content = '';
                 }
+                
             },
             getData: function () {
                 this.database.ref('/products').limitToLast(30).on('value', e => {
@@ -204,9 +205,14 @@
                 }
             },
             check() {
-                if(event.ctrlKey && event.keyCode == 13){
+                if (event.shiftKey && event.keyCode == 13) {
+                } else if ( !this.isMobile() && event.keyCode == 13) {
+                    event.preventDefault();
                     this.send();
                 }
+            }, isMobile() {
+                try { document.createEvent("TouchEvent"); return true; }
+                catch (e) { return false; }
             }
         }
     })
