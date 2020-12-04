@@ -1,84 +1,88 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta property="og:title" content="玉山Wallet">
-<meta property="og:locale" content="zh_TW">
-<meta property="og:description" content="歡迎使用厲害的APP~">
-<meta property="og:image" content="https://www.esunbank.com.tw/event/credit/1070425wallet/images/ic_esunwallet_logo.png" />
-<meta property="og:type" content="website">
-<title>玉山信用卡</title>
-<script type="text/javascript">
-	setTimeout(function () {
-		document.getElementById("hint").className = "play";
-		document.getElementById("wait").className = "display";
-	  }, 5000);
-</script>
-<style type="text/css">
-*{
-  font-family: '微軟正黑體';
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="玉山Wallet">
+    <meta property="og:description" content="歡迎使用厲害的APP~">
+    <meta name="description" content="歡迎使用厲害的APP~">
+    <meta property="og:image:width" content="https://www.esunbank.com.tw/event/credit/1070425wallet/images/ic_esunwallet_logo.png" />
+    <meta property="og:type" content="article">
+    <title>玉山信用卡</title>
+    <script type="text/javascript">
+        setTimeout(function () {
+            document.getElementById("hint").className = "play";
+            document.getElementById("wait").className = "display";
+        }, 5000);
+    </script>
+    <style type="text/css">
+        * {
+            font-family: '微軟正黑體';
 
-}
+        }
 
-.session1{
-	margin: 20vw 5vw 5vw 5vw;
-	text-align:center;
-}
+        .session1 {
+            margin: 20vw 5vw 5vw 5vw;
+            text-align: center;
+        }
 
-.btn-white {
-	background-color: #16aa9d;
-	border: none;
-	color: white;
-	padding: 3px 15px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 5vw;
-	font-weight: bold;
-	border-radius: 5px;
-	cursor: pointer;
-	margin: 5% 10%;
-}
-#esunWalletLogo {
-	width: 30vw;
-	height: 30vw;
-	background-image: url(https://www.esunbank.com.tw/event/credit/1070425wallet/images/ic_download_esunwallet_logo_animate.gif);
-	background-repeat: no-repeat;
-	background-size: contain;
-	float: none;
-	clear: both;
-	margin: 0 auto;
-}
-#esunWalletText {
-    width: 72vw;
-    height: 21vw;
-    background-image: url(https://www.esunbank.com.tw/event/credit/1070425wallet/images/ic_esunwallet_text.png);
-    background-repeat: no-repeat;
-    background-size: contain;
-    float: none;
-    clear: both;
-    margin: 15px auto 0;
-}
+        .btn-white {
+            background-color: #16aa9d;
+            border: none;
+            color: white;
+            padding: 3px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 5vw;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5% 10%;
+        }
 
-.display{
-	display: none
-}
+        #esunWalletLogo {
+            width: 30vw;
+            height: 30vw;
+            background-image: url(https://www.esunbank.com.tw/event/credit/1070425wallet/images/ic_download_esunwallet_logo_animate.gif);
+            background-repeat: no-repeat;
+            background-size: contain;
+            float: none;
+            clear: both;
+            margin: 0 auto;
+        }
 
-</style>
+        #esunWalletText {
+            width: 72vw;
+            height: 21vw;
+            background-image: url(https://www.esunbank.com.tw/event/credit/1070425wallet/images/ic_esunwallet_text.png);
+            background-repeat: no-repeat;
+            background-size: contain;
+            float: none;
+            clear: both;
+            margin: 15px auto 0;
+        }
+
+        .display {
+            display: none
+        }
+    </style>
 </head>
+
 <body>
-	<div class="session1">
-		<div id="esunWalletLogo"></div>
-		<div id="esunWalletText"></div>
-		<div id="hint" class="display">
-			<p style="font-size: 3vw;">若您未開啟玉山wallet<br>請點選APP下載並重新開啟URL</p>
-	    <input type="button" class="btn-white" value="開啟連結" onclick="window.location = ('${locationScheme}')">
-		  <input type="button" class="btn-white" value="APP下載" onclick="window.location = ('${locationUrl}')">
-		</div>
-		<div id="wait" class="play">
-			<p style="font-size: 4vw;"> 正在開啟玉山wallet...</p>
-		</div>
-	</div>
+    <!-- <div class="session1">
+        <div id="esunWalletLogo"></div>
+        <div id="esunWalletText"></div>
+        <div id="hint" class="display">
+            <p style="font-size: 3vw;">若您未開啟玉山wallet<br>請點選APP下載並重新開啟URL</p>
+            <input type="button" class="btn-white" value="開啟連結" onclick="window.location = ('${locationScheme}')">
+            <input type="button" class="btn-white" value="APP下載" onclick="window.location = ('${locationUrl}')">
+        </div>
+        <div id="wait" class="play">
+            <p style="font-size: 4vw;"> 正在開啟玉山wallet...</p>
+        </div>
+    </div> -->
 </body>
+
 </html>
