@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=0" />
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <title>EsunCreditweb</title>
+</head>
+<style>
+    body {
+        font-family: 微軟正黑體;
+        touch-action: pan-y;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+    }
+
+    .watermark {
+        color: #ffffff;
+        position: absolute;
+        margin: 0;
+        z-index: 10;
+        left: 55%;
+        top: 25%;
+    }
+
+    .prizeMark {
+        font-size: small;
+        border: 1.5px solid #ef4343;
+        background-color: #ef4343;
+        padding: 1px 5px;
+        border-radius: 20px;
+        -webkit-transform: rotate(25deg);
+        -moz-transform: rotate(25deg);
+    }
+
+    .div1-font-size {
+        font-size: x-large;
+    }
+
+    .div1-active-Btn {
+        display: inline-block;
+        padding: .6rem 2rem;
+        border-radius: 2em;
+        box-sizing: border-box;
+        text-decoration: none;
+        color: #00a19b;
+        border-color: #00a19b;
+        background-color: #ffffff;
+        text-align: center;
+    }
+
+    @media (max-width: 510px) {
+        .div1-font-size {
+            font-size: large;
+        }
+    }
+
+    @media (max-width: 410px) {
+        .div1-font-size {
+            font-size: medium;
+        }
+
+        .main-font {
+            font-size: medium !important;
+            font-weight: bold !important;
+        }
+    }
+</style>
+
+<body>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/myvue.js"></script>
+    <div id="app" class="container-fluid p-0" style="max-width: 588px;min-width: 344px;">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <img src="./img/mom520_kv.jpg" class="img-fluid" style="background-size: cover; display: block;">
+            <div style="position: absolute;display: flex;flex-direction: column;align-items: center;">
+                <p class="mt-3 text-center div1-font-size">
+                    2022/4/29~2022/5/15<br>單筆消費滿1,000元<br>即可參與刷卡對對碰活動<br>授權碼對中指定號碼即可獲得紅利點數</p>
+                <button class="btn div1-active-Btn div1-font-size"
+                    onclick="window.open('https://www.esunbank.com.tw/event/credit/1110318card/index.html')">活動詳情</button>
+            </div>
+        </div>
+        <div class="d-flex flex-column mt-4 px-5">
+            <img src="./img/mom520_point.png" class="img-fluid" style="z-index: 1;">
+        </div>
+        <div class="d-flex flex-column" style="height: 2rem; margin-top: -2rem;">
+            <img src="./img/mom520_wave.png" class="img-fluid" style="z-index: -1;">
+        </div>
+        <div class="mt-3 container-fluid px-2" style="background-color: #fff5ec;">
+            <div class="card mx-2" style="background-color: #ffd1d1;border-color: #ffffff;">
+                <div class="d-flex flex-row mx-2 ">
+                    <div class="d-flex flex-column justify-content-center flex-fill m-2">
+                        <span style="font-size: medium;text-align: start;">對對碰已領取</span>
+                        <span style="font-size: small;text-align: start;">(本活動限領取50筆)</span>
+                    </div>
+                    <div class="d-flex flex-fill" style="font-size: medium;">
+                        <div class=" d-flex flex-fill justify-content-center align-items-center"
+                            style="background-color: #ff80ac;color: #ffffff; width: 100%;height: 100%;border-radius: 30px;">
+                            <span style="font-size: medium;">{{ formatPonintTotal }} 點</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end align-items-center m-2">
+                        <span style="font-size: small;">
+                            共 {{ myPrize.prizeCount }} 筆
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-row mt-4 mb-2 mx-1">
+                <div class="d-flex mx-1" style="border-right: 1pt solid gray;"></div>
+                <div class="d-flex justify-content-center align-items-center" style="font-size: small;">
+                    交易紀錄
+                </div>
+                <div class="d-flex mx-1" style="border-right: 1pt solid gray;"></div>
+                <div class="d-flex flex-fill fw-bold justify-content-start align-items-center main-font">
+                    {{viewCardName(cardsIndex)}}</div>
+                <div class="d-flex justify-content-end align-items-center"><button v-show="cards.length != 0"
+                        type="button" class="btn"
+                        style="padding-bottom: 0px; padding-top: 0px;background-color: #2d9cdf; border-color: #2d9cdf;color: #ffffff;font-size: small;border-radius: 15px;"
+                        @click="changeCard">切換卡片</button>
+                </div>
+            </div>
+
+            <div class="card p-2 m-2" style="border-color: #ffa8c4;"
+                v-for="(trans, index) in viewTransDetail(cardsIndex)">
+                <div class="d-flex flex-row " :style="cardsStyle" @click="confirmPrize(index)">
+                    <div class="d-flex justify-content-center align-items-center mx-3">
+                        <img v-show="trans.pic == 100" src="./img/mom520_thanks.png" width="50" alt="">
+                        <img v-show="trans.pic == 1000" src="./img/mom520_lucky.png" width="50" alt="">
+                        <img v-show="trans.pic == 100000" src="./img/mom520_superlucky.png" width="50" alt="">
+                    </div>
+                    <div class="d-flex flex-fill justify-content-start align-items-center">
+                        <div class="d-flex flex-column flex-fill justify-content-center flex-fill">
+                            <span class="fs-6 fw-bold">{{trans.MName}}</span>
+                            <p class="card-text"><small>{{trans.TransDateTime}}</small>
+                                <span v-show="trans.isGetPrize=='Y'" class="watermark prizeMark">已領取</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="d-flex text-end justify-content-end align-items-center">
+                        <div class="d-flex flex-column">
+                            <span>{{'$'+trans.Amount}}</span>
+                            <p class="card-text">
+                                <small style="font-size: small;">授權碼 {{trans.AIR}}</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-fill mt-3">
+                <div class="col-12 text-center">
+                    <small class="text-muted">{{viewBottomWord(cardsIndex)}}</small>
+                </div>
+            </div>
+            <div class="d-flex flex-fill" style="height: 60px;">
+
+            </div>
+        </div>
+
+        <div class="modal fade" id="actDetail">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        活動內容
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="changeCard">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="card-header">
+                        請選擇卡片
+                    </div>
+                    <div class="modal-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item" v-for="(card , index) in cards" :id=card.cardId
+                                :style="cardsStyle" @click="onclickCard(index)">
+                                {{card.cardName}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="confirmPrize">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        請確認是否兌換?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-sm  btn-primary"
+                            @click="onclickPrize(confirmPrizeIndex)">確定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="position-fixed top-0 end-0 pt-5" style="z-index: 11">
+            <div id="toastAlert" class="toast align-items-center text-white bg-danger border-0" role="alert"
+                aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{toastAlertText}}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
+<script>
+    Vue.createApp({
+        data() {
+            return {
+                actDetailModel: null,
+                changeCardModel: null,
+                confirmPrizeModal: null,
+                toastAlert: null,
+                toastAlertText: '',
+                confirmPrizeIndex: 0,
+                cardsIndex: 0,
+                cardsStyle: {
+                    cursor: 'pointer',
+                },
+                cards: [],
+                transDetail: {},
+                myPrize: {
+                    pointTotal: 0,
+                    prizeCount: 0,
+                },
+            }
+        }, computed: {
+            formatPonintTotal() {
+                return this.myPrize.pointTotal.toLocaleString('en-US')
+            },
+        }, methods: {
+            popAlert(rc) {
+                this.toastAlertText = '請稍後再試(99)'
+                if (rc == 98) {
+                    this.toastAlertText = '取得交易紀錄異常(98)'
+                } else if (rc == 97) {
+                    this.toastAlertText = '兌換時發生異常(97)'
+                } else if (rc == 96) {
+                    this.toastAlertText = '該筆點數已領取(96)'
+                } else if (rc == 95) {
+                    this.toastAlertText = '關帳中，請明天再來領取點數!(95)'
+                } else if (rc == 94) {
+                    this.toastAlertText = '兌換時發生異常(94)'
+                } else if (rc == 93) {
+                    this.toastAlertText = '已達活動領取上限(93)'
+                }
+                this.toastAlert.show()
+            },
+            actDetail() {
+                this.actDetailModel.show()
+            },
+            changeCard() {
+                this.changeCardModal.show()
+            },
+            onclickCard(i) {// 點選卡片決定交易明細
+                let cardId = this.cards[i].cardId;
+                if (!Object.keys(this.transDetail).includes(cardId)) { // 若查無再去要資料
+                    this.getTransDetail(cardId).then(res => res.json())
+                        .then((response) => {
+                            // console.log(response)
+                            if (response['RC'] == '00') {
+                                this.transDetail[cardId] = response['transDetail'][cardId]
+                            } else {
+                                this.popAlert(response['RC'])
+                            }
+                        }).catch((error) => {
+                            this.popAlert(99)
+                            console.log('錯誤' + error);
+                        })
+                }
+                this.changeCardModal.hide()
+                this.cardsIndex = i
+            },
+            confirmPrize(i) {// 確認是否兌換
+                let cardId = this.cards[this.cardsIndex].cardId;
+                let transDetail = this.transDetail[cardId][i]
+                if (transDetail.isGetPrize == 'Y') {
+                    return
+                }
+                this.confirmPrizeModal.show()
+                this.confirmPrizeIndex = i;
+            },
+            onclickPrize(i) {// 點選兌換
+                let cardId = this.cards[this.cardsIndex].cardId;
+                let transDetail = this.transDetail[cardId][i]
+                if (transDetail.isGetPrize == 'Y') {
+                    return
+                }
+                this.getPrize(cardId, transDetail.AIR)
+                    .then(res => res.json())
+                    .then((response) => {
+                        // console.log(response)
+                        if (response['RC'] == '00') {
+                            transDetail.isGetPrize = 'Y'
+                            this.myPrize.pointTotal += parseInt(transDetail.pic)
+                            this.myPrize.prizeCount += 1
+                        } else {
+                            this.popAlert(response['RC'])
+                        }
+                    }).catch((error) => {
+                        this.popAlert(99)
+                        console.log('錯誤' + error);
+                    }).finally(() => {
+                        this.confirmPrizeModal.hide()
+                    })
+            },
+            async getPrize(cardId, air) {
+                const response = await fetch('http://localhost:8000/getPrize', {
+                    method: 'post',
+                    body: 'action=getPrize&cardId=' + cardId + '&air=' + air,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                })
+                return await response
+            },
+            async getCards() {
+                const response = await fetch('http://localhost:8000/getCards', {
+                    method: 'post',
+                    body: 'action=getCards',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                })
+                return await response
+            },
+            async getTransDetail(cardId, air) {
+                const response = await fetch('http://localhost:8000/getTransDetail', {
+                    method: 'post',
+                    body: 'action=getTransDetail&cardId=' + cardId,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                })
+                return await response
+            },
+            async getMyPrize() {
+                const response = await fetch('http://localhost:8000/getMyPrize', {
+                    method: 'post',
+                    body: 'action=getMyPrize',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                })
+                return await response
+            },
+            viewCardName(cardsIndex) {
+                if (this.cards.length == 0) {
+                    return '未持有符合活動之卡片'
+                } else {
+                    return this.cards[cardsIndex].cardName
+                }
+            },
+            viewTransDetail(cardsIndex) {
+                if (this.cards.length == 0 || JSON.stringify(this.transDetail) === '{}') {
+                    return JSON.parse('[]')
+                } else {
+                    return this.transDetail[this.cards[cardsIndex].cardId]
+                }
+            },
+            viewBottomWord(cardsIndex) {
+                if (JSON.stringify(this.transDetail) === '{}' || JSON.stringify(this.transDetail[this.cards[cardsIndex].cardId]) === '[]') {
+                    return '--無符合活動之交易紀錄--'
+                } else {
+                    return '--無更多交易紀錄--'
+                }
+            },
+        }, mounted() {
+            this.actDetailModel = new bootstrap.Modal(document.getElementById('actDetail'), {
+                keyboard: false
+            })
+            this.changeCardModal = new bootstrap.Modal(document.getElementById('changeCard'), {
+                keyboard: false
+            })
+            this.confirmPrizeModal = new bootstrap.Modal(document.getElementById('confirmPrize'), {
+                keyboard: false
+            })
+            this.toastAlert = new bootstrap.Toast(document.getElementById('toastAlert'))
+
+            this.getMyPrize()
+                .then(res => res.json())
+                .then((response) => {
+                    if (response['RC'] != '00') {
+                        this.popAlert(response['RC'])
+                        return
+                    }
+                    this.myPrize.pointTotal = response['data']['pointTotal']
+                    this.myPrize.prizeCount = response['data']['prizeCount']
+                }).catch((error) => {
+                    this.popAlert(99)
+                    console.log('錯誤' + error);
+                })
+
+
+            this.getCards()
+                .then(res => res.json())
+                .then((response) => {
+                    if (response['RC'] != '00') {
+                        this.popAlert(response['RC'])
+                        return
+                    }
+                    this.cards = response['cards']
+                    this.getTransDetail(this.cards[0].cardId)
+                        .then(res => res.json())
+                        .then((response) => {
+                            if (response['RC'] != '00') {
+                                this.popAlert(response['RC'])
+                                return
+                            }
+                            this.transDetail = response['transDetail']
+                        }).catch((error) => {
+                            this.popAlert(response['RC'])
+                            console.log('錯誤' + error);
+                        })
+                }).catch((error) => {
+                    this.popAlert(99)
+                    console.log('錯誤' + error);
+                })
+        }
+    }).mount('#app')
+</script>
